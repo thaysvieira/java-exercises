@@ -1,12 +1,12 @@
 package com.amigoscode._2_developers._11_files;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * File Reading Exercises
@@ -30,7 +30,7 @@ public class FileReading {
     public static List<String> readAllLines(String filePath) throws IOException {
         // TODO: 1 - Use Files.readAllLines(Path.of(filePath)) to read all lines.
         //  Return the resulting List<String>.
-        return null;
+        return Files.readAllLines(Path.of(filePath));
     }
 
     /**
@@ -42,10 +42,14 @@ public class FileReading {
      */
     public static void readWithBufferedReader(String filePath) throws IOException {
         // TODO: 2 - Use try-with-resources to create a BufferedReader:
-        //  try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        //      read lines in a loop using reader.readLine() until it returns null.
-        //      Print each line.
-        //  }
+          try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+              String line;
+              while ((line = reader.readLine()) != null) {
+                  System.out.println(line);
+              }
+             // read lines in a loop using reader.readLine() until it returns null.
+             // Print each line.
+          }
 
     }
 
@@ -60,7 +64,14 @@ public class FileReading {
         // TODO: 3 - Read the file line by line and count the lines.
         //  You can use Files.readAllLines() and call .size(),
         //  or use Files.lines() with .count() for a stream-based approach.
-        return 0;
+        List<String> lines = Files.readAllLines(Path.of(filePath));
+        long count = 0;
+        for (String line : lines) {
+            if (!line.isEmpty()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -76,7 +87,14 @@ public class FileReading {
         //  Filter the lines to only include those that contain the given word.
         //  Hint: use a for loop and an ArrayList to collect matching lines,
         //  or use Files.readAllLines().stream().filter(...).toList()
-        return null;
+        List<String> lines = Files.readAllLines(Path.of(filePath));
+        ArrayList<String>filterByWords = new ArrayList<>();
+        for(String line: lines){
+            if(line.toLowerCase().contains(word.toLowerCase())){
+                filterByWords.add(line);
+            }
+        }
+        return filterByWords;
     }
 
     /**
@@ -89,7 +107,7 @@ public class FileReading {
     public static String readFileAsString(String filePath) throws IOException {
         // TODO: 5 - Use Files.readString(Path.of(filePath)) to read the entire file
         //  as a single String. Return it.
-        return null;
+        return Files.readString(Path.of(filePath));
     }
 
     /**
@@ -103,7 +121,15 @@ public class FileReading {
         //  Catch FileNotFoundException (or NoSuchFileException) and return
         //  "File not found: " + filePath.
         //  Catch IOException and return "Error reading file: " + e.getMessage().
-        return null;
+        String file;
+        try {
+            file = Files.readString(Path.of(filePath));
+        }catch (NoSuchFileException e){
+            return "File not found: " + filePath;
+        } catch (IOException e) {
+            return "Error reading file: " + e.getMessage();
+        }
+        return file;
     }
 
     public static void main(String[] args) throws IOException {
