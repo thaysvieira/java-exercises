@@ -16,7 +16,7 @@ package com.amigoscode._3_oop._3_abstractclasses;
 
 // TODO: 1 - Make this class abstract by adding the `abstract` keyword.
 //   An abstract class cannot be instantiated directly.
-abstract class Shape {
+    public abstract class Shape {
 
     // TODO: 2 - Declare an abstract method: double area()
     //   Abstract methods have no body — just the signature followed by ;

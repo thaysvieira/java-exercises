@@ -28,16 +28,38 @@ public class ShapeCalculator {
     //   Print: "The <className> has an area of <area>"
     //   Use shape.getClass().getSimpleName() to get the class name.
     //   Use String.format("%.2f", shape.area()) for formatting.
-
+    public void printShapeArea(Shape shape){
+        System.out.println("The "+getClass()+" has an area of "+String.format("%.2f", shape.area()));
+    }
 
     // TODO: 2 - Create a method: double totalArea(List<Shape> shapes)
     //   Iterate over all shapes and return the sum of their areas.
-
+    public double totalArea(List<Shape> shapes){
+        double sum =0;
+        if(shapes == null || shapes.isEmpty()){
+            throw new IllegalArgumentException("Shapes can't be null");
+        }
+       for(Shape shape: shapes){
+         sum+=shape.area();
+       }
+       return sum;
+    }
 
     // TODO: 3 - Create a method: Shape largestShape(List<Shape> shapes)
     //   Return the shape with the largest area.
     //   If the list is empty, return null.
-
+    public Shape largestShape(List<Shape> shapes){
+        if(shapes == null || shapes.isEmpty()){
+            throw new IllegalArgumentException("Shapes can't be null");
+        }
+        Shape largestShape = shapes.get(0);
+        for(Shape shape: shapes){
+            if(shape.area()>largestShape.area()){
+                largestShape = shape;
+            }
+        }
+        return largestShape;
+    }
 
     // TODO: 4 - Create a method: String describeShape(Shape shape)
     //   Use instanceof with pattern matching (Java 16+) to return
@@ -46,12 +68,25 @@ public class ShapeCalculator {
     //     (just return "Circle detected with area: " + c.area())
     //   - If shape is a Rectangle r: return "Rectangle detected with area: " + r.area()
     //   - Otherwise: return "Unknown shape with area: " + shape.area()
-
+    public String describeShape(Shape shape){
+        if(shape instanceof Circle c){
+           return "Circle detected with area: " + c.area();
+        } else if (shape instanceof Rectangle r) {
+            return "Rectangle detected with area: " + r.area();
+        }else{
+            return "Unknown shape with area: " + shape.area();
+        }
+    }
 
     // TODO: 5 - Create a method: String formatSummary(List<Shape> shapes)
     //   Return a formatted summary string like:
     //   "Summary: <N> shapes, total area: <totalArea>, largest area: <largestArea>"
     //   Use the totalArea() and largestShape() methods you already wrote.
+//    public String formatSummary(List<Shape> shapes){
+//        for (Shape shape: shapes){
+//            shapes.
+//        }
+//    }
 
 
     // TODO: 6 - In main, create a List<Shape> with at least two Circles
