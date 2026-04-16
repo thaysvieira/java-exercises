@@ -21,12 +21,22 @@ public class UpperBoundedWildcard {
     // TODO: 1 - Create a static method: double sumOfList(List<? extends Number> list)
     //  It should iterate through the list and sum all elements using doubleValue().
     //  Return the total sum.
+    static double sumOfList(List<? extends Number> list){
+        double sum = 0;
+        for (Number object: list){
+            sum+= object.doubleValue();
+        }
+        return sum;
+    }
 
 
     // TODO: 2 - Create a static method:
     //  void copyToNumberList(List<? extends Number> source, List<Number> destination)
     //  It should copy all elements from source into destination.
     //  This works because anything that extends Number IS-A Number.
+    static void copyToNumberList(List<? extends Number> source, List<Number> destination){
+        destination.addAll(source);
+    }
 
 
     public static void main(String[] args) {
@@ -36,6 +46,12 @@ public class UpperBoundedWildcard {
         //  (b) List<Double> with values 1.5, 2.5, 3.5
         //  (c) List<Long> with values 100L, 200L, 300L
         //  Print the sum for each.
+        List<Integer> integers = List.of(1, 2, 3);
+        System.out.println(sumOfList(integers));
+        List<Double> doubles = List.of(1.5, 2.5, 3.5);
+        System.out.println(sumOfList(doubles));
+        List<Long> longs = List.of(100L, 200L, 300L);
+        System.out.println(sumOfList(longs));
 
 
         // TODO: 4 - Demonstrate that you CANNOT add to List<? extends Number>.
@@ -51,6 +67,10 @@ public class UpperBoundedWildcard {
 
         // TODO: 5 - Use copyToNumberList() to copy a List<Integer> into a
         //  List<Number>. Print the destination list to verify it worked.
+
+       List<Number>numberList =  new ArrayList<>();
+       copyToNumberList(integers,numberList);
+        System.out.println(numberList);
 
 
         // TODO: 6 - Add a comment below explaining the PECS principle

@@ -22,6 +22,11 @@ public class LowerBoundedWildcard {
     //  It should add the integers 1, 2, and 3 to the list.
     //  This works because any list that holds Integer or a supertype of Integer
     //  can safely accept Integer values.
+     static void addNumbers(List<? super Integer> list){
+                list.add(1);
+                list.add(2);
+                list.add(3);
+       }
 
 
     // TODO: 2 - Create a static method:
@@ -30,6 +35,9 @@ public class LowerBoundedWildcard {
     //  This is the PECS principle in action:
     //    source uses "extends" because it PRODUCES elements (we read from it)
     //    destination uses "super" because it CONSUMES elements (we write to it)
+    static <T> void moveElements(List<? extends T> source, List<? super T> destination){
+        destination.addAll(source);
+        }
 
 
     public static void main(String[] args) {
@@ -40,6 +48,16 @@ public class LowerBoundedWildcard {
         //  (c) List<Object>    - Object is a supertype of Integer
         //  Print each list after calling addNumbers().
 
+        List<Integer> integers = new ArrayList<>();
+        List<Number> numbers = new ArrayList<>();
+        List<Object> objects = new ArrayList<>();
+
+        addNumbers(integers);
+        System.out.println(integers);
+        addNumbers(numbers);
+        System.out.println(numbers);
+        addNumbers(objects);
+        System.out.println(objects);
 
         // TODO: 4 - Demonstrate that you CAN add Integer to List<? super Integer>.
         //  Create a List<? super Integer> variable, assign a new ArrayList<Number>()
@@ -47,11 +65,17 @@ public class LowerBoundedWildcard {
         //  Then try adding a Double and observe/explain the compile error (commented out).
         //
         // list.add(3.14);  // Why doesn't this compile even though list holds Numbers?
-
+        // because it just hold integer and not double as the example above is trying to save in the list.
+        List<? super Integer> list = new ArrayList<Number>();
+        list.add(5);
+        list.add(6);
+        list.add(3);
+        System.out.println(list);
 
         // TODO: 5 - Use moveElements() to move elements from a List<Integer> source
         //  to a List<Number> destination. Print the destination list to verify.
-
+        moveElements(integers,numbers);
+        System.out.println(numbers);
 
         // TODO: 6 - Add a comment below explaining the PECS principle
         //  (Producer Extends, Consumer Super) as it applies to this exercise.
@@ -59,4 +83,7 @@ public class LowerBoundedWildcard {
         //  How does this complement the "extends" wildcard?
 
     }
-}
+    }
+
+
+

@@ -23,7 +23,9 @@ public class TypeErasureDemo {
         //  using == and print the result.
         //  Example: System.out.println(stringList.getClass() == intList.getClass());
         //  Are they the same class at runtime? Add a comment explaining why.
-
+        List<String> strings = List.of("Hello", "World");
+        List<Integer> integers = List.of(1, 2, 3);
+        System.out.println(strings.getClass() == integers.getClass());
 
         // TODO: 2 - Demonstrate that generic type info is lost at runtime.
         //  Print the getClass().getName() of both lists from TODO 1.

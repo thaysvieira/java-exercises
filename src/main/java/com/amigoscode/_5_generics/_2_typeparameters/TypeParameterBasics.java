@@ -14,6 +14,29 @@ public class TypeParameterBasics {
     // TODO: 1 - Declare a generic class Container<T> with a single private field
     //  of type T called "value".
 
+    static class Container<T>{
+        private  T value;
+
+        public Container(T value){
+            this.value = value;
+        }
+
+        public T getValue() {
+            return value;
+        }
+
+        public void setValue(T value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "Container{" +
+                    "value=" + value +
+                    '}';
+        }
+    }
+
 
     // TODO: 2 - Add a constructor to Container that takes a parameter of type T
     //  and assigns it to the "value" field.
@@ -33,12 +56,18 @@ public class TypeParameterBasics {
         //  (a) Container<String> holding the value "Java Generics"
         //  (b) Container<Integer> holding the value 2024
         //  Print both containers using toString().
-
+        Container<String> a = new Container<>("Java Generics");
+        Container<Integer> b = new Container<>(2024);
+        System.out.println(a.toString());
+        System.out.println(b.toString());
 
         // TODO: 6 - Demonstrate type safety: try to call setValue(123) on the
         //  Container<String> instance. Comment it out and explain why the
         //  compiler rejects it. Then call setValue with a valid String and
         //  print the updated container.
-
+        //a.setValue(123);
+        // This is because we defined the wrapper class as a string not a integer so as generic provide a compile time we can demonstrate immediately the error.
+        a.setValue("Thays");
+        System.out.println(a.getValue());
     }
 }
