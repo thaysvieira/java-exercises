@@ -1,5 +1,6 @@
 package com.amigoscode._6_functionalinterfaces._2_functionalinterfaces;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -20,29 +21,51 @@ public class FunctionExercise {
 
         // TODO: 1 - Create a Function<String, Integer> called 'stringLength'
         //  that returns the length of a string.
-
+        Function<String, Integer> stringLength =String::length;
 
         // TODO: 2 - Create a Function<String, String> called 'toUpperCase'
         //  that converts a string to uppercase.
-
+        Function<String, String> toUpperCase = String::toUpperCase;
 
         // TODO: 3 - Chain 'toUpperCase' and 'stringLength' using andThen() to
         //  create a new function that first converts to uppercase, then gets
         //  the length. Apply it to "hello" and print the result.
         //  Hint: toUpperCase.andThen(stringLength)
-
+        Function<String, Integer> chainedFunction = toUpperCase.andThen(stringLength);
 
         // TODO: 4 - Chain 'stringLength' and 'toUpperCase' using compose() to
         //  achieve the same result as TODO 3. Apply it to "hello" and print.
         //  Hint: stringLength.compose(toUpperCase)
         //  Note: compose applies the argument function FIRST.
-
+        Function<String, Integer> compose = stringLength.compose(toUpperCase);
 
         // TODO: 5 - Create a Function<Integer, String> called 'intToWord' that
         //  converts integers 1-5 to their English word ("one", "two", ..., "five").
         //  For any other number, return "unknown".
         //  Hint: You can use a switch expression or if-else chain.
-
+        Function<Integer, String> intToWord =(key)->{
+           switch (key){
+               case 1-> {
+                   return "one";
+               }
+               case 2-> {
+                   return "two";
+               }
+               case 3-> {
+                   return "three";
+               }
+               case 4-> {
+                   return "four";
+               }
+               case 5-> {
+                   return "five";
+               }
+               default -> {
+                   return "invalid argument";
+               }
+           }
+        };
+        System.out.println(intToWord.apply(1));
 
         List<String> words = Arrays.asList("apple", "banana", "cherry", "date");
 
@@ -50,11 +73,12 @@ public class FunctionExercise {
         //  of the 'words' list into its length. Store the result in a
         //  List<Integer> called 'lengths' and print it.
         //  Hint: Use words.stream().map(stringLength).collect(...)
-
+        List<Integer> lengths = new ArrayList<>(words.stream().map(stringLength).collect(Collectors.toSet()));
+        System.out.println(lengths);
 
         // TODO: 7 - Call the applyFunction method below, passing stringLength
         //  and the string "Functional Programming". Print the result.
-
+        System.out.println(applyFunction(stringLength,"Functional Programming"));
     }
 
     /**
