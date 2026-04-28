@@ -2,6 +2,7 @@ package com.amigoscode._7_streams._5_filtering;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -47,35 +48,41 @@ public class FilterExercise {
 
         // TODO: 1 - Filter 'people' to find persons older than 18
         //           Print each person's name and age
-
+        List<Person> olderThan18 = people.stream().filter(p -> p.age > 18).toList();
+        System.out.println(olderThan18);
 
         // TODO: 2 - Filter 'orders' with amount greater than 100
         //           Print each order's product and amount
-
-
+        List<Order> amountGreater = orders.stream().filter(n -> n.amount > 100).toList();
+        System.out.println(amountGreater);
         // TODO: 3 - Filter 'emails' keeping only valid ones matching a simple regex
         //           Use the pattern: ".+@.+\\..+"  (contains @ and a dot after it)
         //           Hint: Use String::matches in the filter predicate
         //           Print each valid email
-
+        List<String> match = emails.stream().filter(s->Pattern.matches(".+@.+\\..+",s)).toList();
+        System.out.println(match);
 
         // TODO: 4 - Chain multiple filter conditions on 'people':
         //           Keep persons who are older than 18 AND live in "London"
         //           Print each matching person
-
+        List<Person> london = people.stream().filter(p -> p.age() > 18).filter(o -> o.city().equals("London")).toList();
+        System.out.println(london);
 
         // TODO: 5 - Create a Predicate<Order> variable called 'isExpensive' that checks
         //           if an order amount is >= 100. Use this predicate in filter().
         //           Print each matching order's product
-
+        Predicate<Order> isExpensive = o-> o.amount>=100;
+        List<Order> expensiveOrders = orders.stream().filter(isExpensive).toList();
+        System.out.println(expensiveOrders);
 
         // TODO: 6 - Filter 'people' with complex OR conditions:
         //           Keep persons who live in "Paris" OR are younger than 18
         //           Print each matching person
-
-
+        List<Person> paris = people.stream().filter(p -> p.age() > 18).filter(o -> o.city().equals("Paris")).toList();
+        System.out.println(paris);
         // TODO: 7 - Count the number of COMPLETED orders
         //           Use filter + count() and print the result
-
+        long completed = orders.stream().filter(o -> o.status.equals("COMPLETED")).count();
+        System.out.println(completed);
     }
 }
