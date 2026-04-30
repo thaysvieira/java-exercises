@@ -2,6 +2,7 @@ package com.amigoscode._7_streams._7_statistics;
 
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -37,30 +38,36 @@ public class AverageAndSum {
         // TODO: 1 - Calculate the sum of all student scores
         //           Use mapToInt(Student::score).sum()
         //           Print the result
-
+        int sum = students.stream().mapToInt(Student::score).sum();
+        System.out.println(sum);
 
         // TODO: 2 - Calculate the average of all student scores
         //           Use mapToDouble(Student::score).average()
         //           Print the result (remember: average() returns OptionalDouble)
-
+        OptionalDouble average = students.stream().mapToDouble(Student::score).average();
+        System.out.println(average);
 
         // TODO: 3 - Use Collectors.summingInt() to sum all student scores
         //           Print the result
-
+        Integer collect = students.stream().collect(Collectors.summingInt(Student::score));
+        System.out.println(collect);
 
         // TODO: 4 - Use Collectors.averagingDouble() to average all product prices
         //           Print the result
-
-
+        Double productPrice = products.stream().collect(Collectors.averagingDouble(Product::price));
+        System.out.println(productPrice);
         // TODO: 5 - Calculate the weighted average of products:
         //           weighted avg = sum(price * quantity) / sum(quantity)
         //           Hint: Use mapToDouble for the numerator and mapToInt for denominator
         //           Print the result
-
-
+        double numerator = products.stream().mapToDouble(s -> s.price() * s.quantity()).sum();
+        int denominator = products.stream().mapToInt(Product::quantity).sum();
+        double avg = numerator/ (double) denominator;
+        System.out.println(avg);
         // TODO: 6 - Handle an empty stream: calculate the average of 'emptyStudents' scores
         //           Use orElse(0.0) to provide a default value when no elements exist
         //           Print the result
-
+        double v = emptyStudents.stream().mapToInt(Student::score).average().orElse(0.0);
+        System.out.println(v);
     }
 }

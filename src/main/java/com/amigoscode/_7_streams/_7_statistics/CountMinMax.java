@@ -30,30 +30,37 @@ public class CountMinMax {
 
         // TODO: 1 - Count the number of employees with salary greater than 80000
         //           Use filter + count() and print the result
-
-
+        long countSalary = employees.stream().filter(s -> s.salary() > 80000).count();
+        System.out.println(countSalary);
         // TODO: 2 - Find the employee with the lowest salary
         //           Use min() with Comparator.comparingDouble(Employee::salary)
         //           Print the employee's name and salary
-
-
+        employees.stream().min(Comparator.comparingDouble(Employee::salary)).ifPresent(e-> System.out.println(e.name()+" - "+e.salary()));
         // TODO: 3 - Find the employee with the highest salary
         //           Use max() with an appropriate comparator
         //           Print the employee's name and salary
-
-
+        employees.stream().max(Comparator.comparingDouble(Employee::salary)).ifPresent(e-> System.out.println(e.name()+" - "+e.salary()));
         // TODO: 4 - Use the Collectors.counting() collector to count all employees
         //           Print the result
-
+        long totalEmployee = employees.stream().collect(Collectors.counting());
+        System.out.println(totalEmployee);
 
         // TODO: 5 - Combine count with groupingBy: count employees per department
         //           Use Collectors.groupingBy with Collectors.counting() as downstream
         //           Print each department and its count
-
+        Map<String, List<Employee>> collect = employees.stream().collect(Collectors.groupingBy(Employee::department));
+        collect.forEach((department,list)->{
+            System.out.println(department+" : "+list);
+        });
 
         // TODO: 6 - Use Collectors.minBy and Collectors.maxBy to find the lowest
         //           and highest paid employees
         //           Print both results
-
+        Optional<Employee> maxPay = employees.stream().collect(Collectors.maxBy(Comparator.comparingDouble(Employee::salary)));
+        System.out.println("highest pay...");
+        System.out.println(maxPay);
+        Optional<Employee> minPay = employees.stream().collect(Collectors.minBy(Comparator.comparingDouble(Employee::salary)));
+        System.out.println("lowest pay...");
+        System.out.println(minPay);
     }
 }

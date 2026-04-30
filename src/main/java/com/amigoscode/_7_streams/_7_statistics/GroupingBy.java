@@ -2,6 +2,7 @@ package com.amigoscode._7_streams._7_statistics;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,39 +49,43 @@ public class GroupingBy {
         // TODO: 1 - Group 'people' by city
         //           Result type: Map<String, List<Person>>
         //           Print each city and its list of people
-
-
+        Map<String, List<Person>> byPeople = people.stream().collect(Collectors.groupingBy(Person::city));
+        System.out.println(byPeople);
         // TODO: 2 - Group 'orders' by status
         //           Print each status and its list of orders
-
-
+        Map<String, List<Order>> byStatus = orders.stream().collect(Collectors.groupingBy(Order::status));
+        System.out.println(byStatus);
         // TODO: 3 - Group 'words' by their first letter
         //           Hint: Use word.charAt(0) or word.substring(0, 1)
         //           Print each letter and its words
-
+        Map<Character, List<String>> firstLetter = words.stream().collect(Collectors.groupingBy(a -> a.charAt(0)));
+        System.out.println(firstLetter);
 
         // TODO: 4 - Group 'orders' by status and count how many orders per status
         //           Use Collectors.groupingBy with Collectors.counting() as downstream
         //           Print each status and its count
-
+        Map<String, Long> status = orders.stream().collect(Collectors.groupingBy(s -> s.status, Collectors.counting()));
+        System.out.println(status);
 
         // TODO: 5 - Group 'orders' by status and sum the amounts per status
         //           Use Collectors.groupingBy with Collectors.summingDouble as downstream
         //           Print each status and its total amount
-
-
+        Map<String, Double> amount = orders.stream().collect(Collectors.groupingBy(s -> s.status, Collectors.summingDouble(a -> a.amount)));
+        System.out.println(amount);
         // TODO: 6 - Group 'people' by city and collect names to a Set
         //           Use Collectors.groupingBy with Collectors.mapping + Collectors.toSet()
         //           Print each city and its set of names
-
-
+        Map<String, Set<Person>> peopleByCity = people.stream().collect(Collectors.groupingBy(Person::city, Collectors.toSet()));
+        System.out.println(peopleByCity);
         // TODO: 7 - Multi-level grouping: group 'people' by city, then by age range
         //           Age ranges: "Young" (< 25), "Adult" (25-35), "Senior" (> 35)
         //           Use nested groupingBy
         //           Hint: Create a helper method getAgeRange(int age)
         //           Print the result
-
+        Map<String, Map<String, List<Person>>> rageAge = people.stream().collect(Collectors.groupingBy(Person::city, Collectors.groupingBy(range -> getAgeRange(range.age()))));
+        System.out.println(rageAge);
     }
+
 
     // Helper method for TODO 7
     private static String getAgeRange(int age) {

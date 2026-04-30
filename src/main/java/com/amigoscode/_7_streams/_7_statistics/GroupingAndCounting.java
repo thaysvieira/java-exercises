@@ -1,9 +1,9 @@
 package com.amigoscode._7_streams._7_statistics;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -39,33 +39,37 @@ public class GroupingAndCounting {
         // TODO: 1 - Group 'wordsWithRepeats' by the word itself and count occurrences
         //           Result type: Map<String, Long>
         //           Print each word and its count
-
-
+        Map<String, Long> wordsRepeat = wordsWithRepeats.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+        System.out.println(wordsRepeat);
         // TODO: 2 - Find the most common word in 'wordsWithRepeats'
         //           Group by word, count occurrences, then find the entry with max value
         //           Hint: Use entrySet().stream() on the grouped map, then max()
         //           Print the word and its count
-
+        wordsRepeat.entrySet().stream().max(Comparator.comparingLong(Map.Entry::getValue))
+                .ifPresent(a->{
+                    System.out.println(a.getKey()+" : "+a.getValue());
+                });
 
         // TODO: 3 - Use Collectors.partitioningBy to split 'numbers' into even and odd
         //           Result type: Map<Boolean, List<Integer>>
         //           Print the even numbers (key=true) and odd numbers (key=false)
-
-
+        Map<Boolean, List<Integer>> collect = numbers.stream().collect(Collectors.partitioningBy(s -> s % 2 == 0));
+        System.out.println(collect);
         // TODO: 4 - Partition 'students' into those with grade >= 85 (pass) and below (fail)
         //           Print each group
-
-
+        Map<Boolean, List<Student>> grades = students.stream().collect(Collectors.partitioningBy(s -> s.grade() >= 85));
+        System.out.println(grades);
         // TODO: 5 - Use Collectors.mapping() within groupingBy:
         //           Group students by subject, but collect only their names (not full objects)
         //           Hint: Collectors.groupingBy(Student::subject, Collectors.mapping(Student::name, Collectors.toList()))
         //           Print each subject and its list of student names
-
-
+        Map<String, List<String>> subject = students.stream().collect(Collectors.groupingBy(Student::subject, Collectors.mapping(Student::name, Collectors.toList())));
+        System.out.println(subject);
         // TODO: 6 - Use maxBy as a downstream collector:
         //           Group students by subject and find the highest-scoring student per subject
         //           Use Collectors.groupingBy with Collectors.maxBy
         //           Print each subject and its top student
-
+        Map<String, Optional<Student>> highestScore = students.stream().collect(Collectors.groupingBy(Student::subject, Collectors.maxBy(Comparator.comparingInt(Student::grade))));
+        System.out.println(highestScore);
     }
 }
