@@ -1,6 +1,8 @@
 package com.amigoscode._7_streams._11_understanding;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -23,14 +25,19 @@ public class LazyStreams {
         //           then use findFirst() as terminal operation.
         //           Observe: not all elements are processed! Operations execute per-element.
         //           Print the result.
-
+        names.stream().peek(n -> System.out.println("Processing: " + n))
+                .filter(name -> name.length() > 3)
+                .peek(name -> System.out.println("Processing: " + name))
+                .findFirst().ifPresent(System.out::println);
 
         // TODO: 2 - Demonstrate short-circuiting with findFirst():
         //           Create a stream from 'numbers', use peek to print "Checking: " + number,
         //           filter for numbers > 5, then findFirst().
         //           Notice how the stream stops processing once the first match is found.
         //           Print how many elements were actually checked.
-
+        numbers.stream().peek(n-> System.out.println("Checking: " + n))
+                .filter(number->number>5)
+                .findFirst().ifPresent(System.out::println);
 
         // TODO: 3 - Show that streams can only be consumed once:
         //           Create a Stream<String> variable from 'names'.
@@ -38,7 +45,13 @@ public class LazyStreams {
         //           Then try to call count() again on the same stream.
         //           Wrap the second call in a try-catch for IllegalStateException.
         //           Print the exception message.
-
+        Stream<String> namesStream= names.stream().distinct();
+        System.out.println( namesStream.count());
+//        try {
+//            System.out.println(namesStream.count());
+//        } catch (IllegalStateException e) {
+//            throw new RuntimeException(e);
+//        }
 
         // TODO: 4 - Demonstrate that ordering of operations matters for performance:
         //           Approach 1: filter first, then map (efficient)
@@ -47,14 +60,18 @@ public class LazyStreams {
         //           numbers.stream().map(n -> n * n).filter(n -> n > 25)...
         //           Use peek() to count how many times map executes in each approach.
         //           Both give the same result but the first approach does less work.
-
-
+        System.out.println("First approach");
+        numbers.stream().filter(n -> n > 5).peek(n-> System.out.println("Checking..."+n)).map(n -> n * n).peek(n-> System.out.println("Checking..."+n)).forEach(System.out::println);
+        System.out.println("Second approach");
+        numbers.stream().map(n -> n * n).peek(n-> System.out.println("Checking..."+n)).filter(n -> n > 25).peek(n-> System.out.println("Checking..."+n)).forEach(System.out::println);
         // TODO: 5 - Show the difference between intermediate and terminal operations:
         //           Create a stream pipeline with filter and map but NO terminal operation.
         //           Add a System.out.println("This should NOT print") inside peek.
         //           Then add a terminal operation (e.g., collect) to a second pipeline
         //           with a peek that prints "This SHOULD print".
         //           Observe: without a terminal operation, nothing happens!
+        names.stream().peek(n -> System.out.println("This should NOT print")).filter(n -> n.length() > 3);
+        names.stream().peek(n -> System.out.println("This SHOULD print")).filter(n -> n.length() > 3).collect(java.util.stream.Collectors.toList());
 
     }
 }

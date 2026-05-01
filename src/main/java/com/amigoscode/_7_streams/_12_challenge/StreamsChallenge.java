@@ -2,10 +2,9 @@ package com.amigoscode._7_streams._12_challenge;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Exercise: Streams Challenge
@@ -41,42 +40,50 @@ public class StreamsChallenge {
 
         // TODO: 1 - Filter transactions by type: find all DEPOSIT transactions
         //           Print each deposit transaction's id and amount
-
+        transactions.stream().filter(n->n.type().equals("DEPOSIT")).forEach(n-> System.out.println("Id: "+n.id()+" Amount: "+n.amount()));
 
         // TODO: 2 - Group transactions by type and sum the amounts per type
         //           Result type: Map<String, Double>
         //           Print each type and its total amount
-
+        Map<String, Double> collect = transactions.stream().collect(Collectors.groupingBy(Transaction::type, Collectors.summingDouble(Transaction::amount)));
+        System.out.println(collect);
 
         // TODO: 3 - Find the 3 highest value transactions (by amount)
         //           Sort by amount descending, limit to 3
         //           Print each transaction's id, amount, and type
-
+       transactions.stream().sorted(Comparator.comparingDouble(Transaction::amount).reversed()).limit(3).forEach(System.out::println);
 
         // TODO: 4 - Calculate the average transaction amount per type
         //           Use groupingBy with averagingDouble as downstream collector
         //           Print each type and its average
-
+        Map<String, Double> collect1 = transactions.stream().collect(Collectors.groupingBy(Transaction::type, Collectors.averagingDouble(Transaction::amount)));
+        System.out.println(collect1);
 
         // TODO: 5 - Find the month with the most transactions
         //           Group by month (use date.getMonth()), count per month,
         //           then find the entry with the max count
         //           Print the month and how many transactions it had
 
-
+        Optional<Map.Entry<Month, Long>> max = transactions.stream().collect(Collectors.groupingBy(s -> s.date().getMonth(), Collectors.counting()))
+                .entrySet().stream().max(Comparator.comparingLong(Map.Entry::getValue));
+        System.out.println(max);
         // TODO: 6 - Generate a summary report string in the format:
         //           "Total transactions: X | Total amount: $Y | Avg amount: $Z"
         //           Use streams to calculate each value
         //           Print the report
-
+        DoubleSummaryStatistics doubleSummaryStatistics = transactions.stream().mapToDouble(Transaction::amount).summaryStatistics();
+        System.out.println("Total transactions: "+doubleSummaryStatistics.getCount()+"| Total amount: "+doubleSummaryStatistics.getSum()+"| Avg amount: "+doubleSummaryStatistics.getAverage());
 
         // TODO: 7 - Find duplicate amounts (amounts that appear more than once)
         //           Group by amount, count occurrences, filter entries with count > 1
         //           Print each duplicate amount and how many times it appears
+        transactions.stream().collect(Collectors.groupingBy(Transaction::amount, Collectors.counting()))
+                .entrySet().stream().filter(s->s.getValue()>1).forEach(System.out::println);
 
 
         // TODO: 8 - Sort transactions by date, then by amount (descending) for same date
         //           Collect to a list and print each transaction
-
+        List<Transaction> transactionList = transactions.stream().sorted(Comparator.comparing(Transaction::date).thenComparing(Comparator.comparing(Transaction::amount).reversed())).toList();
+        System.out.println(transactionList);
     }
 }
