@@ -9,8 +9,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Exercise: JUnit 5 Features
- *
+ * <p>
  * Practice using JUnit 5 annotations and features:
+ *
  * @BeforeEach, @AfterEach, @BeforeAll, @AfterAll,
  * @DisplayName, @Disabled, @Nested, @RepeatedTest, @Tag
  */
@@ -28,28 +29,53 @@ class JunitFeaturesTest {
     //  Inside, set testCount = 0 and print "Starting all tests...".
     //  Note: @BeforeAll methods must be static.
 
+    @BeforeAll
+    static void initAll() {
+        testCount = 0;
+        System.out.println("Starting all tests...");
+    }
 
     // TODO: 2 - Use @BeforeEach to set up test data before every test.
     //  Create a method named setUp() annotated with @BeforeEach.
     //  Initialize the items list as a new ArrayList<>().
     //  Add "apple" and "banana" to the list. Increment testCount.
-
+    @BeforeEach
+    void setUp() {
+        items = new ArrayList<>();
+        items.add("apple");
+        items.add("banana");
+        testCount++;
+    }
 
     // TODO: 3 - Use @AfterEach to clean up after every test.
     //  Create a method named tearDown() annotated with @AfterEach.
     //  Clear the items list and print "Test #" + testCount + " completed".
 
+    @AfterEach
+    void tearDown() {
+        items.clear();
+        System.out.println("Test #" + testCount + " completed");
+    }
 
     // TODO: 4 - Write a test with @DisplayName for a readable name.
     //  Annotate with @Test and @DisplayName("Items list should start with 2 elements").
     //  Assert that items.size() equals 2.
-
+    @Test
+    @DisplayName("Items list should start with 2 elements")
+    void itemsListShouldStartWith2Elements() {
+        assertEquals(2, items.size());
+    }
 
     // TODO: 5 - Use @Disabled to skip a test.
     //  Create a test annotated with @Test, @Disabled("Demonstrating disabled test"),
     //  and @DisplayName.
     //  Inside, call fail("This test should not run") so it would fail if it were enabled.
-
+    @Test
+    @DisplayName("Demonstrating disabled test")
+    @Disabled
+    void shouldNotRun() {
+        fail("This test should not run");
+    }
 
     // TODO: 6 - Use @Nested to group related tests in an inner class.
     //  Create an inner class named AddingItems annotated with @Nested
@@ -57,7 +83,14 @@ class JunitFeaturesTest {
     //  Inside it, write two tests:
     //    - "Adding an item increases the list size" - add "cherry" and assert size is 3
     //    - "Added item is in the list" - add "date" and assert items.contains("date")
-
+    @Test
+    @DisplayName("When adding items")
+    void shouldAddingItems() {
+        items.add("cherry");
+        assertEquals(3, items.size());
+        items.add("date");
+        assertTrue(items.contains("date"));
+    }
 
     // TODO: 7 - Use @RepeatedTest to run the same test 5 times.
     //  Create a method annotated with @RepeatedTest(5) instead of @Test.
@@ -66,9 +99,24 @@ class JunitFeaturesTest {
     //  Hint: @RepeatedTest(value = 5, name = "Repetition {currentRepetition} of {totalRepetitions}")
 
 
+    @RepeatedTest(value = 5, name = "Repetition {currentRepetition} of {totalRepetitions}")
+    @DisplayName("Repeated addition test")
+    void shouldRepeatRunTest5Times() {
+        items.add("tomatoes");
+        assertEquals(3, items.size());
+        items.add("date");
+        assertTrue(items.contains("date"));
+    }
+
     // TODO: 8 - Use @Tag to categorize tests.
     //  Create a test annotated with @Test, @Tag("slow"), and @DisplayName.
     //  Inside, assert that items is not null and not empty.
     //  Tags can be used to include/exclude tests at build time.
-
+    @Test
+    @Tag("slow")
+    @DisplayName("When items is not null and not empty")
+    void shouldNotBeNullOrEmpty() {
+        assertFalse(items.isEmpty());
+        assertNotEquals(null, items);
+    }
 }
