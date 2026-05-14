@@ -1,5 +1,7 @@
 package com.amigoscode._8_testing._8_tdd;
 
+import java.util.regex.Pattern;
+
 /**
  * TDD Exercise: Password Validator
  *
@@ -18,6 +20,7 @@ package com.amigoscode._8_testing._8_tdd;
  */
 public class PasswordValidator {
 
+    private final static int PASS_LENGTH = 8;
     /**
      * Validates whether the given password meets all strength requirements.
      *
@@ -27,6 +30,17 @@ public class PasswordValidator {
      */
     public boolean isValid(String password) {
         // TODO: Students implement this after writing tests first (TDD approach)
-        throw new UnsupportedOperationException("Implement me using TDD!");
+        if(password == null){
+            throw new IllegalArgumentException();
+        }
+        if(password.length()<PASS_LENGTH){
+            return false;
+        }else if (password.chars().noneMatch(Character::isUpperCase)) {
+            return  false;
+        } else if (password.chars().noneMatch(Character::isLowerCase)) {
+            return  false;
+        } else if (!Pattern.matches(".*[!@#$%^&*()_+=<>?/\\[\\]{}|].*",password)) {
+            return false;
+        }else return Pattern.matches(".*\\d.*", password);
     }
 }
