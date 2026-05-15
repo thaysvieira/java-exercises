@@ -11,12 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
  * Exercise: Mockito ArgumentCaptor
- *
+ * <p>
  * Practice capturing arguments passed to mocked methods so you can inspect
  * them in detail. This is useful when the argument is constructed inside the
  * method under test.
@@ -35,6 +36,9 @@ class ArgumentCaptorTest {
     private EmailService emailService;
 
     @InjectMocks
+    private NotificationService notificationService;
+
+    @InjectMocks
     private OrderService orderService;
 
     // TODO: 1 - Create an ArgumentCaptor<Order> and capture the argument passed to save().
@@ -43,14 +47,35 @@ class ArgumentCaptorTest {
     //  Place an order.
     //  Capture: verify(orderRepository).save(orderCaptor.capture());
     //  Get the captured value: Order savedOrder = orderCaptor.getValue();
+    @Test
+    void canChargeArgCaptor() {
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        when(paymentService.charge("CUST-1", 99.99)).thenReturn(true);
+        Order order = new Order("ORD-1", "CUST-1", 99.99);
+        Order saved = orderService.placeOrder(order);
+        verify(orderRepository).save(orderCaptor.capture());
+        assertThat(orderCaptor.getValue().getCustomerId()).isEqualTo(saved.getCustomerId());
+        assertThat(orderCaptor.getValue().getAmount()).isEqualTo(saved.getAmount());
 
+    }
 
     // TODO: 2 - Assert that the captured Order has the correct fields.
     //  Using the captured order from TODO 1:
     //  assertEquals("COMPLETED", savedOrder.getStatus());
     //  assertEquals("CUST-1", savedOrder.getCustomerId());
     //  assertEquals(99.99, savedOrder.getAmount());
+    @Test
+    void canCaptureOrder() {
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        when(paymentService.charge("CUST-1", 99.99)).thenReturn(true);
+        Order order = new Order("ORD-1", "CUST-1", 99.99);
+        Order saved = orderService.placeOrder(order);
+        verify(orderRepository).save(orderCaptor.capture());
+        assertEquals("COMPLETED", saved.getStatus());
+        assertEquals("CUST-1", saved.getCustomerId());
+        assertEquals(99.99, saved.getAmount());
 
+    }
 
     // TODO: 3 - Capture multiple invocations.
     //  Stub paymentService.charge to return true.
@@ -59,14 +84,48 @@ class ArgumentCaptorTest {
     //  Get all values: List<Order> savedOrders = orderCaptor.getAllValues();
     //  Assert that savedOrders has size 3.
     //  Assert each order has status "COMPLETED".
+    @Test
+    void canCaptureMultiInvocation() {
+        when(paymentService.charge(anyString(), anyDouble())).thenReturn(true);
+        Order order = new Order("ORD-1", "CUST-01", 234.90);
+        Order order1 = new Order("ORD-17", "CUST-2", 200.90);
+        Order order2 = new Order("ORD-2", "CUST-3", 115.77);
+        orderService.placeOrder(order);
+        orderService.placeOrder(order1);
+        orderService.placeOrder(order2);
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        verify(orderRepository, times(3)).save(orderCaptor.capture());
+        List<Order> savedOrders = orderCaptor.getAllValues();
 
+        assertEquals("COMPLETED", orderCaptor.getValue().getStatus());
+        assertThat(savedOrders).hasSize(3);
+    }
 
     // TODO: 4 - Use @Captor annotation instead of manually creating the captor.
     //  Declare a field: @Captor ArgumentCaptor<Order> annotatedCaptor;
     //  Write a test that places an order and captures the saved order using annotatedCaptor.
     //  Verify the captured order's fields.
     //  Note: @Captor is cleaner than calling ArgumentCaptor.forClass() in each test.
+    @Captor
+    ArgumentCaptor<Order> annotatedCaptor;
 
+    @Test
+    void canCaptor() {
+
+        when(paymentService.charge(anyString(), anyDouble())).thenReturn(true);
+        Order order = new Order("ORD-1", "CUST-01", 234.90);
+        Order order1 = new Order("ORD-17", "CUST-2", 200.90);
+        Order order2 = new Order("ORD-2", "CUST-3", 115.77);
+        orderService.placeOrder(order);
+        orderService.placeOrder(order1);
+        orderService.placeOrder(order2);
+        annotatedCaptor = ArgumentCaptor.forClass(Order.class);
+        verify(orderRepository, times(3)).save(annotatedCaptor.capture());
+        List<Order> savedOrders = annotatedCaptor.getAllValues();
+
+        assertEquals("COMPLETED", annotatedCaptor.getValue().getStatus());
+        assertThat(savedOrders).hasSize(3);
+    }
 
     // TODO: 5 - Capture arguments passed to EmailService.
     //  Create a NotificationService with the mocked EmailService.
@@ -77,7 +136,16 @@ class ArgumentCaptorTest {
     //  ArgumentCaptor<String> bodyCaptor = ArgumentCaptor.forClass(String.class);
     //  verify(emailService).send(toCaptor.capture(), subjectCaptor.capture(), bodyCaptor.capture());
     //  Assert the captured subject contains "Order Confirmation".
-
+    @Test
+    void canCaptureArgsPassedByEmailService() {
+        Order order = new Order("ORD-1", "CUST-01", 234.90);
+        notificationService.notifyOrderPlaced(order);
+        ArgumentCaptor<String> toCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> subjectCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> bodyCaptor = ArgumentCaptor.forClass(String.class);
+        verify(emailService).send(toCaptor.capture(), subjectCaptor.capture(), bodyCaptor.capture());
+        assertThat(subjectCaptor.getValue().contains("Order Confirmation"));
+    }
 
     // TODO: 6 - Combine captor with verify to check interaction details.
     //  Stub paymentService.charge to return true.
@@ -89,5 +157,17 @@ class ArgumentCaptorTest {
     //  verify(paymentService).charge(customerCaptor.capture(), amountCaptor.capture());
     //  Assert customerCaptor.getValue() equals the order's customer ID.
     //  Assert amountCaptor.getValue() equals the order's amount.
+    @Test
+    void canCheckInteraction() {
+        when(paymentService.charge("CUST-01", 99.99)).thenReturn(true);
+        Order order = new Order("ORD-1", "CUST-01", 99.99);
+        orderService.placeOrder(order);
 
+        ArgumentCaptor<String> customerCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Double> amountCaptor = ArgumentCaptor.forClass(Double.class);
+        verify(paymentService).charge(customerCaptor.capture(), amountCaptor.capture());
+        assertThat(amountCaptor.getValue()).isEqualTo(order.getAmount());
+        assertThat(customerCaptor.getValue()).isEqualTo(order.getCustomerId());
+
+    }
 }
